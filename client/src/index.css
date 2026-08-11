@@ -412,3 +412,23 @@ html { background: var(--paper); }
 .publication-unavailable { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-soft); font-size: 10px; }
 .publication-unavailable svg { color: var(--copper); }
 @media (max-width: 700px) { .publication-footer-links { flex-direction: column; gap: 11px; } }
+
+/* إصلاح نهائي لمحطات الخط الزمني على الشاشات الضيقة */
+@media (max-width: 700px) {
+  .timeline { position: relative; width: 100%; margin: 34px 0 0; padding-left: 0; padding-right: 0; }
+  .timeline::before { top: 0; right: auto; left: 17px; bottom: 0; width: 1px; }
+  .timeline-item { display: block; min-height: 0; width: 100%; }
+  .timeline-trigger { display: flex; flex-direction: row; align-items: flex-start; direction: ltr; width: 100%; min-height: 0; gap: 12px; padding: 18px 0; text-align: left; }
+  .timeline-rail { flex: 0 0 34px; display: flex; align-items: flex-start; justify-content: center; min-height: 31px; }
+  .timeline-rail > span { width: 26px; height: 26px; background: var(--paper); }
+  .timeline-content { flex: 1 1 auto; width: auto; min-width: 0; direction: rtl; text-align: right; }
+  .timeline-content strong { display: block; width: auto; max-width: none; margin: 3px 0 5px; color: var(--ink); font-family: "Noto Kufi Arabic", sans-serif; font-size: 14px; font-weight: 600; line-height: 1.75; white-space: normal; word-break: normal; overflow-wrap: normal; }
+  .timeline-years { display: block; margin-bottom: 4px; font-size: 10px; line-height: 1.5; white-space: nowrap; direction: ltr; text-align: right; }
+  .timeline-place { display: block; width: auto; margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.8; white-space: normal; word-break: normal; overflow-wrap: normal; }
+  .timeline-toggle { flex: 0 0 26px; width: 26px; height: 26px; margin-top: 2px; }
+  .timeline-detail { display: block; width: auto; margin-left: 46px; padding: 0 0 18px; direction: rtl; text-align: right; }
+  .timeline-detail > span, .timeline-detail p { display: block; width: auto; margin-right: 0; }
+  .timeline-detail p { margin-top: 7px; font-size: 11px; line-height: 1.9; white-space: normal; word-break: normal; overflow-wrap: normal; }
+  .is-english .timeline-content, .is-english .timeline-detail { direction: ltr; text-align: left; }
+  .is-english .timeline-years { text-align: left; }
+}
