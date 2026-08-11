@@ -9,6 +9,9 @@ describe("academic CV content", () => {
       expect(dossier.meta.email).toBe("ralwaili@uowasit.edu.iq");
       expect(dossier.education.items.length).toBeGreaterThanOrEqual(6);
       expect(dossier.experience.items.length).toBeGreaterThanOrEqual(6);
+      expect(dossier.experience.items.every((item) => item.category === "academic" || item.category === "professional")).toBe(true);
+      expect(dossier.experience.items.filter((item) => item.category === "academic").length).toBeGreaterThanOrEqual(1);
+      expect(dossier.experience.items.filter((item) => item.category === "professional").length).toBeGreaterThanOrEqual(5);
       expect(dossier.teaching.courses.length).toBeGreaterThanOrEqual(9);
       expect(dossier.research.books.length).toBeGreaterThanOrEqual(8);
       expect(dossier.honors.items.length).toBeGreaterThanOrEqual(8);

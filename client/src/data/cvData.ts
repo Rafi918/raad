@@ -71,12 +71,12 @@ export const cvData = {
       title: "محطات في بناء المؤسسات",
       copy: "إدارة الجامعات والكليات ورئاسة اللجان الأكاديمية العليا في العراق واليمن.",
       items: [
-        { years: "2020 - 2023", role: "عميد كلية الدراسات العليا", place: "جامعتا العلوم التطبيقية وجامعة الملكة أروى / صنعاء", note: "الإشراف على 15 برنامجاً للدكتوراه وتطوير اللوائح الأكاديمية." },
-        { years: "2018 - 2019", role: "القائم بأعمال رئيس الجامعة (مفوّض)", place: "جامعة العلوم التطبيقية والاجتماعية / صنعاء", note: "قيادة 7 كليات وإدارة الشؤون الأكاديمية والتمثيل الرسمي." },
-        { years: "2015 - 2018", role: "عميد كلية الآداب", place: "جامعتا العلوم التطبيقية وجامعة الملكة أروى / صنعاء", note: "تطوير البرامج الإنسانية وتعزيز جودة التعليم." },
-        { years: "2012 - 2015", role: "رئيس قسم اللغة العربية للناطقين بغيرها", place: "المدرسة الأمريكية / صنعاء", note: "تطوير مناهج وبرامج تدريس العربية للدبلوماسيين والمنظمات." },
-        { years: "2003 - 2008", role: "عميد كليتي التربية والآداب والدراسات العليا", place: "جامعة العلوم التطبيقية والاجتماعية / صنعاء", note: "إدارة شاملة لبرامج البكالوريوس والدراسات العليا." },
-        { years: "2010 - الآن", role: "أستاذ الأدب العربي (الأدب الأندلسي)", place: "جامعة واسط - كلية التربية", note: "التدريس والإشراف على طلاب الدراسات العليا." }
+        { years: "2020 - 2023", category: "professional" as const, role: "عميد كلية الدراسات العليا", place: "جامعتا العلوم التطبيقية وجامعة الملكة أروى / صنعاء", note: "الإشراف على 15 برنامجاً للدكتوراه وتطوير اللوائح الأكاديمية." },
+        { years: "2018 - 2019", category: "professional" as const, role: "القائم بأعمال رئيس الجامعة (مفوّض)", place: "جامعة العلوم التطبيقية والاجتماعية / صنعاء", note: "قيادة 7 كليات وإدارة الشؤون الأكاديمية والتمثيل الرسمي." },
+        { years: "2015 - 2018", category: "professional" as const, role: "عميد كلية الآداب", place: "جامعتا العلوم التطبيقية وجامعة الملكة أروى / صنعاء", note: "تطوير البرامج الإنسانية وتعزيز جودة التعليم." },
+        { years: "2012 - 2015", category: "professional" as const, role: "رئيس قسم اللغة العربية للناطقين بغيرها", place: "المدرسة الأمريكية / صنعاء", note: "تطوير مناهج وبرامج تدريس العربية للدبلوماسيين والمنظمات." },
+        { years: "2003 - 2008", category: "professional" as const, role: "عميد كليتي التربية والآداب والدراسات العليا", place: "جامعة العلوم التطبيقية والاجتماعية / صنعاء", note: "إدارة شاملة لبرامج البكالوريوس والدراسات العليا." },
+        { years: "2010 - الآن", category: "academic" as const, role: "أستاذ الأدب العربي (الأدب الأندلسي)", place: "جامعة واسط - كلية التربية", note: "التدريس والإشراف على طلاب الدراسات العليا." }
       ]
     },
     teaching: {
@@ -236,12 +236,12 @@ export const cvData = {
       title: "Milestones in Institutional Building",
       copy: "Managing universities and faculties while leading high-level academic committees in Iraq and Yemen.",
       items: [
-        { years: "2020 - 2023", role: "Dean of Graduate Studies", place: "Applied Science University & Queen Arwa University / Sana'a", note: "Supervised 15 Ph.D. programs and developed academic bylaws." },
-        { years: "2018 - 2019", role: "Acting President of the University (Authorized)", place: "University of Applied and Social Sciences / Sana'a", note: "Led 7 faculties, managed academic affairs, and represented the institution." },
-        { years: "2015 - 2018", role: "Dean of the Faculty of Arts", place: "Applied Science Univ. & Queen Arwa Univ. / Sana'a", note: "Advanced humanities programs and academic quality." },
-        { years: "2012 - 2015", role: "Head of Arabic for Non-Native Speakers", place: "American School / Sana'a", note: "Developed curricula for diplomats and international organizations." },
-        { years: "2003 - 2008", role: "Dean of Education, Arts & Graduate Studies", place: "Univ. of Applied and Social Sciences / Sana'a", note: "Comprehensive management of undergraduate and graduate programs." },
-        { years: "2010 - Present", role: "Professor of Arabic Literature (Andalusian)", place: "Wasit University - Faculty of Education", note: "Teaching and supervising graduate students." }
+        { years: "2020 - 2023", category: "professional" as const, role: "Dean of Graduate Studies", place: "Applied Science University & Queen Arwa University / Sana'a", note: "Supervised 15 Ph.D. programs and developed academic bylaws." },
+        { years: "2018 - 2019", category: "professional" as const, role: "Acting President of the University (Authorized)", place: "University of Applied and Social Sciences / Sana'a", note: "Led 7 faculties, managed academic affairs, and represented the institution." },
+        { years: "2015 - 2018", category: "professional" as const, role: "Dean of the Faculty of Arts", place: "Applied Science Univ. & Queen Arwa Univ. / Sana'a", note: "Advanced humanities programs and academic quality." },
+        { years: "2012 - 2015", category: "professional" as const, role: "Head of Arabic for Non-Native Speakers", place: "American School / Sana'a", note: "Developed curricula for diplomats and international organizations." },
+        { years: "2003 - 2008", category: "professional" as const, role: "Dean of Education, Arts & Graduate Studies", place: "Univ. of Applied and Social Sciences / Sana'a", note: "Comprehensive management of undergraduate and graduate programs." },
+        { years: "2010 - Present", category: "academic" as const, role: "Professor of Arabic Literature (Andalusian)", place: "Wasit University - Faculty of Education", note: "Teaching and supervising graduate students." }
       ]
     },
     teaching: {

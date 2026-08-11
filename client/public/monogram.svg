@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">ختم رعد ناصر</title>
+  <desc id="desc">ختم أكاديمي دائري يحمل الحرفين ر ن</desc>
+  <rect width="160" height="160" rx="10" fill="#142d3d"/>
+  <circle cx="80" cy="80" r="59" fill="none" stroke="#d7a57a" stroke-width="2"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#d7a57a" stroke-width="1" opacity=".55"/>
+  <path d="M50 41v78M50 80h43c10 0 17-7 17-17s-7-17-17-17H67v52" fill="none" stroke="#f4f0e8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M88 104c12 0 22-7 22-18 0-11-9-17-21-17H79" fill="none" stroke="#d7a57a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="80" cy="17" r="3" fill="#d7a57a"/><circle cx="80" cy="143" r="3" fill="#d7a57a"/>
+  <text x="80" y="143" fill="#f4f0e8" font-family="Arial, sans-serif" font-size="8" letter-spacing="2" text-anchor="middle">RN · 2026</text>
+</svg>
