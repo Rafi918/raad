@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDownLeft,
   ArrowUpLeft,
@@ -57,6 +57,9 @@ export default function Home() {
   const [timelineMode, setTimelineMode] = useState<TimelineMode>("all");
   const [expandedTimeline, setExpandedTimeline] = useState(0);
   const [selectedBook, setSelectedBook] = useState<number | null>(null);
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [transitionKind, setTransitionKind] = useState<"language" | "theme" | null>(null);
+  const transitionTimer = useRef<number | null>(null);
   const { theme, toggleTheme } = useTheme();
   const isEnglish = language === "en";
   const copy = useMemo(() => cvData[language], [language]);
@@ -67,6 +70,21 @@ export default function Home() {
     setExpandedTimeline(0);
     setSelectedBook(null);
   }, [isEnglish, language, timelineMode]);
+
+  useEffect(() => {
+    const updateReadingProgress = () => {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const nextProgress = scrollableHeight > 0 ? (window.scrollY / scrollableHeight) * 100 : 0;
+      setReadingProgress(Math.min(100, Math.max(0, Math.round(nextProgress * 10) / 10)));
+    };
+    updateReadingProgress();
+    window.addEventListener("scroll", updateReadingProgress, { passive: true });
+    window.addEventListener("resize", updateReadingProgress);
+    return () => {
+      window.removeEventListener("scroll", updateReadingProgress);
+      window.removeEventListener("resize", updateReadingProgress);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("raad-cv-language", language);
@@ -111,21 +129,32 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  const triggerTransition = (kind: "language" | "theme") => {
+    if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current);
+    setTransitionKind(kind);
+    transitionTimer.current = window.setTimeout(() => {
+      setTransitionKind(null);
+      transitionTimer.current = null;
+    }, 520);
+  };
+  useEffect(() => () => { if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current); }, []);
   const scrollTo = (id: string) => { const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; document.getElementById(id)?.scrollIntoView({ behavior, block: "start" }); setMenuOpen(false); };
-  const changeLanguage = () => { const next: Locale = isEnglish ? "ar" : "en"; setLanguage(next); setMenuOpen(false); toast.success(next === "en" ? "English version enabled" : "تم تفعيل النسخة العربية"); };
+  const changeLanguage = () => { const next: Locale = isEnglish ? "ar" : "en"; triggerTransition("language"); setLanguage(next); setMenuOpen(false); toast.success(next === "en" ? "English version enabled" : "تم تفعيل النسخة العربية"); };
+  const changeTheme = () => { triggerTransition("theme"); toggleTheme?.(); };
   const copyEmail = async () => { try { await navigator.clipboard.writeText(copy.meta.email); toast.success(copy.contact.copySuccess); } catch { toast.error(isEnglish ? "Please copy the email manually" : "يرجى نسخ البريد يدوياً"); } };
   const navItems = [
     { id: "overview", label: copy.nav.overview }, { id: "education", label: copy.nav.education }, { id: "experience", label: copy.nav.experience }, { id: "teaching", label: copy.nav.teaching }, { id: "research", label: copy.nav.research }, { id: "service", label: isEnglish ? "Service" : "اللجان" }, { id: "honors", label: copy.nav.honors }, { id: "contact", label: copy.nav.contact },
   ];
 
   return (
-    <div className={`site-shell ${isEnglish ? "is-english" : ""} ${darkMode ? "is-dark" : ""}`} dir={isEnglish ? "ltr" : "rtl"}>
+    <div className={`site-shell ${isEnglish ? "is-english" : ""} ${darkMode ? "is-dark" : ""} ${transitionKind ? `is-transitioning-${transitionKind}` : ""}`} dir={isEnglish ? "ltr" : "rtl"}>
+      <div className="reading-progress" role="progressbar" aria-label={isEnglish ? "Reading progress" : "تقدم قراءة السيرة"} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(readingProgress)}><span style={{ width: `${readingProgress}%` }} /></div>
       <aside className="identity-rail" aria-label={isEnglish ? "Academic identity" : "هوية الملف الأكاديمي"}><img src={ASSETS.mark} alt={copy.meta.name} /><span>RN · 2026</span><i aria-hidden="true" /><small>{isEnglish ? "Academic\nDossier" : "ملف\nأكاديمي"}</small></aside>
       <header className="topbar">
         <div className="topbar-inner container">
           <button className="brand" onClick={() => scrollTo("overview")} aria-label={isEnglish ? "Back to overview" : "العودة إلى بداية السيرة"}><img src={ASSETS.mark} alt="" className="brand-mark" /><span className="brand-copy"><strong>{isEnglish ? "Raad Naser" : "رعد ناصر"}</strong><small>{isEnglish ? "Academic dossier" : "الملف الأكاديمي"}</small></span></button>
           <nav className="desktop-nav" aria-label={isEnglish ? "Main navigation" : "التنقل الرئيسي"}>{navItems.map((item) => <a key={item.id} href={`#${item.id}`} className={activeSection === item.id ? "active" : ""}>{item.label}</a>)}</nav>
-          <div className="topbar-actions"><button className="utility-button language-button" onClick={changeLanguage} aria-label={isEnglish ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}><Languages size={15} /><span>{isEnglish ? "العربية" : "EN"}</span></button><button className="utility-button theme-button" onClick={() => toggleTheme?.()} aria-label={darkMode ? copy.nav.lightMode : copy.nav.darkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}<span>{darkMode ? (isEnglish ? "Light" : "نهاري") : (isEnglish ? "Dark" : "ليلي")}</span></button><a className="pdf-button" href={ASSETS.pdf[language]} download aria-label={copy.nav.pdfDownload}><FileDown size={16} /><span>{copy.nav.pdfDownload}</span></a><button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
+          <div className="topbar-actions"><button className="utility-button language-button" onClick={changeLanguage} aria-label={isEnglish ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}><Languages size={15} /><span>{isEnglish ? "العربية" : "EN"}</span></button><button className="utility-button theme-button" onClick={changeTheme} aria-label={darkMode ? copy.nav.lightMode : copy.nav.darkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}<span>{darkMode ? (isEnglish ? "Light" : "نهاري") : (isEnglish ? "Dark" : "ليلي")}</span></button><a className="pdf-button" href={ASSETS.pdf[language]} download aria-label={copy.nav.pdfDownload}><FileDown size={16} /><span>{copy.nav.pdfDownload}</span></a><button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
         </div>
         {menuOpen && <div className="mobile-nav" aria-label={isEnglish ? "Mobile navigation" : "تنقل الهاتف"}>{navItems.map((item, index) => <a key={item.id} href={`#${item.id}`} className={activeSection === item.id ? "active" : ""} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{item.label}</a>)}</div>}
       </header>

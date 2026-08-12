@@ -74,3 +74,20 @@ describe("Home timeline interface", () => {
     });
   });
 });
+
+  it("renders reading progress and applies transition states when language and theme change", () => {
+    renderHome();
+
+    const progress = screen.getByRole("progressbar", { name: "تقدم قراءة السيرة" });
+    expect(progress.getAttribute("aria-valuenow")).toBe("0");
+
+    fireEvent.click(screen.getByRole("button", { name: "التبديل إلى الإنجليزية" }));
+    expect(document.querySelector(".site-shell")?.className).toContain("is-transitioning-language");
+    expect(screen.getByRole("button", { name: "Switch to Arabic" })).toBeTruthy();
+
+    const themeButton = document.querySelector<HTMLButtonElement>(".theme-button");
+    expect(themeButton).not.toBeNull();
+    if (!themeButton) throw new Error("Theme button was not rendered");
+    fireEvent.click(themeButton);
+    expect(document.querySelector(".site-shell")?.className).toContain("is-transitioning-theme");
+  });
