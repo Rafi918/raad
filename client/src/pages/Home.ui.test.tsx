@@ -91,3 +91,54 @@ describe("Home timeline interface", () => {
     fireEvent.click(themeButton);
     expect(document.querySelector(".site-shell")?.className).toContain("is-transitioning-theme");
   });
+
+  it("opens a second timeline chapter in place without leaving another detail block behind", async () => {
+    renderHome();
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>(".timeline-trigger"));
+    const secondChapter = triggers[1];
+    expect(secondChapter).toBeTruthy();
+    if (!secondChapter) throw new Error("Second timeline trigger was not rendered");
+
+    fireEvent.click(secondChapter);
+    await waitFor(() => {
+      expect(secondChapter.getAttribute("aria-expanded")).toBe("true");
+      expect(document.querySelectorAll(".timeline-detail")).toHaveLength(1);
+      expect(secondChapter.nextElementSibling?.classList.contains("timeline-detail")).toBe(true);
+    });
+  });
+
+  it("opens every timeline chapter in sequence with exactly one detail block in place", async () => {
+    renderHome();
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>(".timeline-trigger"));
+    expect(triggers).toHaveLength(6);
+
+    for (let index = 0; index < triggers.length; index += 1) {
+      const trigger = triggers[index];
+      if (index > 0) fireEvent.click(trigger);
+      await waitFor(() => {
+        expect(trigger.getAttribute("aria-expanded")).toBe("true");
+        expect(document.querySelectorAll(".timeline-detail")).toHaveLength(1);
+        expect(trigger.nextElementSibling?.classList.contains("timeline-detail")).toBe(true);
+      });
+    }
+  });
+
+  it("keeps a late chapter detail adjacent in a mobile-sized viewport", async () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 390 });
+    renderHome();
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>(".timeline-trigger"));
+    const lateChapter = triggers[4];
+    expect(lateChapter).toBeTruthy();
+    if (!lateChapter) throw new Error("Late timeline trigger was not rendered");
+
+    fireEvent.click(lateChapter);
+    await waitFor(() => {
+      const detail = lateChapter.nextElementSibling;
+      expect(lateChapter.getAttribute("aria-expanded")).toBe("true");
+      expect(detail?.classList.contains("timeline-detail")).toBe(true);
+      expect(document.querySelectorAll(".timeline-detail")).toHaveLength(1);
+      expect(document.querySelectorAll(".timeline-detail[hidden]")).toHaveLength(0);
+      expect(detail?.previousElementSibling).toBe(lateChapter);
+      expect(detail?.parentElement?.querySelectorAll(":scope > .timeline-detail")).toHaveLength(1);
+    });
+  });

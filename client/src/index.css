@@ -531,3 +531,23 @@ html { background: var(--paper); }
   .timeline-detail:not([hidden]) { display: block; height: auto; min-height: 0; margin: 0 0 0 46px; padding: 0 0 18px; }
   .timeline-detail:not([hidden]) > span, .timeline-detail:not([hidden]) p { position: static; display: block; width: auto; max-width: none; }
 }
+
+/* تخطيط نهائي مستقل لمحطات الهاتف: كل محطة صف، والتفاصيل داخل العمود الثاني */
+@media (max-width: 700px) {
+  .timeline { width: 100%; margin: 32px 0 0; padding: 0; }
+  .timeline::before { top: 0; right: auto; left: 16px; bottom: 0; width: 1px; }
+  .timeline-item { display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 12px; width: 100%; height: auto; min-height: 0 !important; overflow: visible; }
+  .timeline-trigger { grid-column: 1 / -1; display: grid; grid-template-columns: 34px minmax(0, 1fr) 28px; align-items: start; gap: 12px; width: 100%; height: auto; min-height: 0 !important; padding: 18px 0; direction: ltr; text-align: left; }
+  .timeline-rail { grid-column: 1; display: flex; align-items: flex-start; justify-content: center; width: 34px; min-height: 28px; }
+  .timeline-rail > span { width: 26px; height: 26px; }
+  .timeline-content { grid-column: 2; display: block; width: 100%; min-width: 0; direction: rtl; text-align: right; }
+  .timeline-years { display: block; margin: 0 0 5px; white-space: nowrap; direction: ltr; text-align: right; }
+  .timeline-content strong { display: block; width: 100%; margin: 0 0 5px; font-size: 14px; line-height: 1.75; white-space: normal; overflow-wrap: anywhere; }
+  .timeline-place { display: block; width: 100%; margin: 0; white-space: normal; overflow-wrap: anywhere; line-height: 1.8; }
+  .timeline-toggle { grid-column: 3; width: 26px; height: 26px; margin-top: 0; }
+  .timeline-detail:not([hidden]) { grid-column: 2; display: block; width: 100%; min-height: 0; margin: 0; padding: 0 0 20px; direction: rtl; text-align: right; }
+  .timeline-detail:not([hidden]) > span, .timeline-detail:not([hidden]) p { display: block; width: 100%; max-width: none; margin-right: 0; }
+  .timeline-detail:not([hidden]) p { margin-top: 7px; line-height: 1.9; overflow-wrap: anywhere; }
+  .is-english .timeline-content, .is-english .timeline-detail:not([hidden]) { direction: ltr; text-align: left; }
+  .is-english .timeline-years { text-align: left; }
+}
