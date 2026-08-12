@@ -522,3 +522,12 @@ html { background: var(--paper); }
   .site-shell.is-transitioning-language, .site-shell.is-transitioning-theme { animation: none; }
   .language-button::after, .theme-button::after { display: none; }
 }
+
+/* إصلاح فتح محطات الخط الزمني: hidden يجب ألا يحجز أي مساحة */
+.timeline-detail[hidden], .publication-details[hidden] { display: none !important; }
+@media (max-width: 700px) {
+  .timeline-item { display: block; height: auto; min-height: 0 !important; }
+  .timeline-trigger { position: relative; display: flex; align-items: flex-start; height: auto; min-height: 0 !important; }
+  .timeline-detail:not([hidden]) { display: block; height: auto; min-height: 0; margin: 0 0 0 46px; padding: 0 0 18px; }
+  .timeline-detail:not([hidden]) > span, .timeline-detail:not([hidden]) p { position: static; display: block; width: auto; max-width: none; }
+}
