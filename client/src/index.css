@@ -451,3 +451,22 @@ html { background: var(--paper); }
   .timeline-item, .timeline-item.is-visible { opacity: 1; transform: none; transition: none; }
   .timeline-item.is-visible .timeline-rail > span, .timeline-item.is-visible .timeline-content { animation: none; }
 }
+
+/* انتقالات ناعمة عامة بين الأقسام والعناصر التفاعلية */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  main > section:not(.hero-section) { opacity: 0; transform: translateY(18px); transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out); transition-delay: calc(var(--section-index, 0) * 45ms); }
+  main > section:not(.hero-section).is-visible { opacity: 1; transform: translateY(0); }
+  a, button, .button, .text-button, .utility-button, .pdf-button, .contact-row, .publication-main, .timeline-trigger, .education-card, .service-item, .award-item, .metric, .skills-card {
+    transition: color 200ms var(--ease-out), background-color 220ms var(--ease-out), border-color 220ms var(--ease-out), box-shadow 220ms var(--ease-out), transform 220ms var(--ease-out), opacity 220ms var(--ease-out);
+  }
+  .button:hover, .pdf-button:hover, .utility-button:hover { transform: translateY(-2px); }
+  .education-card:hover, .service-item:hover, .award-item:hover, .skills-card:hover { transform: translateY(-3px); }
+  .publication-main:hover, .timeline-trigger:hover { transform: translateX(-3px); }
+  .is-english .publication-main:hover, .is-english .timeline-trigger:hover { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  main > section:not(.hero-section), main > section:not(.hero-section).is-visible { opacity: 1; transform: none; transition: none; }
+  a, button, .button, .text-button, .utility-button, .pdf-button, .contact-row, .publication-main, .timeline-trigger, .education-card, .service-item, .award-item, .metric, .skills-card { transition: none; }
+}
