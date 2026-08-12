@@ -84,6 +84,27 @@ export default function Home() {
   }, [isEnglish, language]);
 
   useEffect(() => {
+    const timelineItems = Array.from(document.querySelectorAll<HTMLElement>(".timeline-item"));
+    if (!("IntersectionObserver" in window)) {
+      timelineItems.forEach((item) => item.classList.add("is-visible"));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.18 });
+    timelineItems.forEach((item, index) => {
+      item.style.setProperty("--timeline-index", String(index));
+      observer.observe(item);
+    });
+    return () => observer.disconnect();
+  }, [language, timelineMode]);
+
+  useEffect(() => {
     const sections = navIds.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     const observer = new IntersectionObserver((entries) => {
       const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
