@@ -36,7 +36,7 @@ const ASSETS = {
   research: "/manus-storage/raad-gallery-research-desk_426f7bc8.jpg",
   paper: "/manus-storage/raad-gallery-manuscript_27b27071.jpg",
   mark: "/monogram.svg",
-  pdf: { ar: "/manus-storage/raad-nasser-cv-ar_ba7e77d5.pdf", en: "/manus-storage/raad-nasser-cv-en_d9d7f493.pdf" },
+  pdf: { ar: "/manus-storage/raad-nasser-cv-ar_87a0bbba.pdf", en: "/manus-storage/raad-nasser-cv-en_cb241562.pdf" },
 };
 
 type Locale = "ar" | "en";

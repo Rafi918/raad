@@ -30,6 +30,8 @@ describe("academic CV content", () => {
     expect(serialized).not.toContain("international law");
     expect(serialized).not.toContain("في والأدب");
     expect(serialized).not.toContain("embrand");
+    expect(serialized).not.toContain("الدكتوراه الأولى");
+    expect(serialized).not.toContain("First Ph.D.");
     expect(cvData.ar.meta.primarySpec).toContain("النقد الأدبي");
     expect(cvData.en.meta.primarySpec).toContain("Literary Criticism");
   });

@@ -58,7 +58,7 @@ export const cvData = {
       title: "تكوين علمي متعدد المسارات",
       copy: "مسار أكاديمي تأسس في الموصل وانطلق نحو الخرطوم وفضاءات النقد الأدبي المقارن والمعاهد الدولية.",
       items: [
-        { year: "1997", title: "الدكتوراه الأولى", detail: "الأدب العربي ونقده (الأدب الأندلسي)", institution: "جامعة أم درمان الإسلامية / الخرطوم (مبتعث من الحكومة العراقية)" },
+        { year: "1997", title: "الدكتوراه", detail: "الأدب العربي ونقده (الأدب الأندلسي)", institution: "جامعة أم درمان الإسلامية / الخرطوم (مبتعث من الحكومة العراقية)" },
         { year: "2006", title: "دكتوراه في الأدب والنقد", detail: "دراسات متقدمة في النقد الأدبي وتحقيق التراث", institution: "الجامعة العالمية الأمريكية" },
         { year: "1992", title: "الماجستير", detail: "الأدب العربي", institution: "جامعة الموصل" },
         { year: "1987", title: "البكالوريوس", detail: "اللغة العربية وآدابها", institution: "جامعة الموصل" },
@@ -223,7 +223,7 @@ export const cvData = {
       title: "Multi-Disciplinary Academic Foundation",
       copy: "An academic trajectory that began in Mosul, expanded to Khartoum, and embraced literary criticism and global institutes.",
       items: [
-        { year: "1997", title: "First Ph.D.", detail: "Arabic Literature and Criticism (Andalusian Literature)", institution: "Omdurman Islamic University / Khartoum (Iraqi Government Scholar)" },
+        { year: "1997", title: "Ph.D.", detail: "Arabic Literature and Criticism (Andalusian Literature)", institution: "Omdurman Islamic University / Khartoum (Iraqi Government Scholar)" },
         { year: "2006", title: "Ph.D. in Literary Criticism", detail: "Literary Criticism (Distance learning supervised by the US Embassy in Sana'a)", institution: "American World University" },
         { year: "1992", title: "Master's Degree", detail: "Arabic Language & Literature", institution: "University of Mosul" },
         { year: "1987", title: "Bachelor's Degree", detail: "Arabic Language and Literature", institution: "University of Mosul" },
