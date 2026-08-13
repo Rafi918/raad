@@ -89,7 +89,9 @@ describe("Home timeline interface", () => {
     expect(themeButton).not.toBeNull();
     if (!themeButton) throw new Error("Theme button was not rendered");
     fireEvent.click(themeButton);
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
     expect(document.querySelector(".site-shell")?.className).toContain("is-transitioning-theme");
+    expect(document.querySelector(".button-primary")).toBeTruthy();
   });
 
   it("opens a second timeline chapter in place without leaving another detail block behind", async () => {
@@ -141,4 +143,25 @@ describe("Home timeline interface", () => {
       expect(detail?.previousElementSibling).toBe(lateChapter);
       expect(detail?.parentElement?.querySelectorAll(":scope > .timeline-detail")).toHaveLength(1);
     });
+  });
+
+
+  it("opens the internal search and filters sections by academic content", () => {
+    renderHome();
+    fireEvent.click(screen.getByRole("button", { name: "البحث داخل السيرة" }));
+    const input = screen.getByRole("textbox", { name: "بحث" });
+    expect(input).toBeTruthy();
+
+    fireEvent.change(input, { target: { value: "الأدب الأندلسي" } });
+    const results = document.querySelectorAll(".search-result");
+    expect(results.length).toBeGreaterThan(0);
+    expect(Array.from(results).some((result) => result.textContent?.includes("البحوث والكتب"))).toBe(true);
+  });
+
+  it("keeps the language, theme, PDF, and menu actions exposed as labeled controls", () => {
+    renderHome();
+    expect(screen.getByRole("button", { name: "التبديل إلى الإنجليزية" })).toBeTruthy();
+    expect(document.querySelector(".theme-button")).toBeTruthy();
+    expect(document.querySelector(".pdf-button")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Open menu" })).toBeTruthy();
   });

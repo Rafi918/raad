@@ -21,6 +21,7 @@ import {
   Phone,
   Quote,
   ScrollText,
+  Search,
   Sparkles,
   Sun,
   X,
@@ -35,7 +36,7 @@ const ASSETS = {
   research: "/manus-storage/raad-gallery-research-desk_426f7bc8.jpg",
   paper: "/manus-storage/raad-gallery-manuscript_27b27071.jpg",
   mark: "/monogram.svg",
-  pdf: { ar: "/manus-storage/raad-nasser-cv-ar_42cd4b27.pdf", en: "/manus-storage/raad-nasser-cv-en_0396fc13.pdf" },
+  pdf: { ar: "/manus-storage/raad-nasser-cv-ar_ba7e77d5.pdf", en: "/manus-storage/raad-nasser-cv-en_d9d7f493.pdf" },
 };
 
 type Locale = "ar" | "en";
@@ -58,6 +59,8 @@ export default function Home() {
   const [expandedTimeline, setExpandedTimeline] = useState(0);
   const [selectedBook, setSelectedBook] = useState<number | null>(null);
   const [readingProgress, setReadingProgress] = useState(0);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [transitionKind, setTransitionKind] = useState<"language" | "theme" | null>(null);
   const transitionTimer = useRef<number | null>(null);
   const { theme, toggleTheme } = useTheme();
@@ -65,6 +68,20 @@ export default function Home() {
   const copy = useMemo(() => cvData[language], [language]);
   const darkMode = theme === "dark";
   const timelineItems = useMemo(() => filterTimelineItems(copy.experience.items, timelineMode), [copy.experience.items, timelineMode]);
+  const searchEntries = useMemo(() => [
+    { id: "overview", label: copy.nav.overview, preview: copy.hero.lede, search: `${copy.meta.name} ${copy.meta.subtitle} ${copy.hero.lede}` },
+    { id: "education", label: copy.nav.education, preview: copy.education.copy, search: `${copy.education.title} ${copy.education.copy} ${copy.education.items.map((item) => `${item.title} ${item.detail} ${item.institution}`).join(" ")}` },
+    { id: "experience", label: copy.nav.experience, preview: copy.experience.copy, search: `${copy.experience.title} ${copy.experience.copy} ${copy.experience.items.map((item) => `${item.role} ${item.place} ${item.note}`).join(" ")}` },
+    { id: "teaching", label: copy.nav.teaching, preview: copy.teaching.copy, search: `${copy.teaching.title} ${copy.teaching.copy} ${copy.teaching.courses.join(" ")}` },
+    { id: "research", label: copy.nav.research, preview: copy.research.copy, search: `${copy.research.title} ${copy.research.copy} ${copy.research.books.join(" ")}` },
+    { id: "service", label: isEnglish ? "Service" : "اللجان", preview: copy.service.copy, search: `${copy.service.title} ${copy.service.copy} ${copy.service.items.join(" ")}` },
+    { id: "honors", label: copy.nav.honors, preview: copy.honors.copy, search: `${copy.honors.title} ${copy.honors.copy} ${copy.honors.items.join(" ")}` },
+    { id: "contact", label: copy.nav.contact, preview: copy.contact.copy, search: `${copy.contact.title} ${copy.contact.copy} ${copy.meta.email} ${copy.meta.phone}` },
+  ], [copy, isEnglish]);
+  const searchResults = useMemo(() => {
+    const normalized = searchQuery.trim().toLocaleLowerCase();
+    return normalized ? searchEntries.filter((entry) => entry.search.toLocaleLowerCase().includes(normalized)) : searchEntries.slice(0, 6);
+  }, [searchEntries, searchQuery]);
 
   useEffect(() => {
     setExpandedTimeline(0);
@@ -138,7 +155,13 @@ export default function Home() {
     }, 520);
   };
   useEffect(() => () => { if (transitionTimer.current !== null) window.clearTimeout(transitionTimer.current); }, []);
-  const scrollTo = (id: string) => { const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; document.getElementById(id)?.scrollIntoView({ behavior, block: "start" }); setMenuOpen(false); };
+  useEffect(() => {
+    if (!searchOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setSearchOpen(false); };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [searchOpen]);
+  const scrollTo = (id: string) => { const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; document.getElementById(id)?.scrollIntoView({ behavior, block: "start" }); setMenuOpen(false); setSearchOpen(false); setSearchQuery(""); };
   const changeLanguage = () => { const next: Locale = isEnglish ? "ar" : "en"; triggerTransition("language"); setLanguage(next); setMenuOpen(false); toast.success(next === "en" ? "English version enabled" : "تم تفعيل النسخة العربية"); };
   const changeTheme = () => { triggerTransition("theme"); toggleTheme?.(); };
   const copyEmail = async () => { try { await navigator.clipboard.writeText(copy.meta.email); toast.success(copy.contact.copySuccess); } catch { toast.error(isEnglish ? "Please copy the email manually" : "يرجى نسخ البريد يدوياً"); } };
@@ -154,10 +177,11 @@ export default function Home() {
         <div className="topbar-inner container">
           <button className="brand" onClick={() => scrollTo("overview")} aria-label={isEnglish ? "Back to overview" : "العودة إلى بداية السيرة"}><img src={ASSETS.mark} alt="" className="brand-mark" /><span className="brand-copy"><strong>{isEnglish ? "Raad Naser" : "رعد ناصر"}</strong><small>{isEnglish ? "Academic dossier" : "الملف الأكاديمي"}</small></span></button>
           <nav className="desktop-nav" aria-label={isEnglish ? "Main navigation" : "التنقل الرئيسي"}>{navItems.map((item) => <a key={item.id} href={`#${item.id}`} className={activeSection === item.id ? "active" : ""}>{item.label}</a>)}</nav>
-          <div className="topbar-actions"><button className="utility-button language-button" onClick={changeLanguage} aria-label={isEnglish ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}><Languages size={15} /><span>{isEnglish ? "العربية" : "EN"}</span></button><button className="utility-button theme-button" onClick={changeTheme} aria-label={darkMode ? copy.nav.lightMode : copy.nav.darkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}<span>{darkMode ? (isEnglish ? "Light" : "نهاري") : (isEnglish ? "Dark" : "ليلي")}</span></button><a className="pdf-button" href={ASSETS.pdf[language]} download aria-label={copy.nav.pdfDownload}><FileDown size={16} /><span>{copy.nav.pdfDownload}</span></a><button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
+          <div className="topbar-actions"><button className="utility-button search-button" onClick={() => setSearchOpen((open) => !open)} aria-label={isEnglish ? "Search the dossier" : "البحث داخل السيرة"} aria-expanded={searchOpen}><Search size={15} /><span>{isEnglish ? "Search" : "بحث"}</span></button><button className="utility-button language-button" onClick={changeLanguage} aria-label={isEnglish ? "Switch to Arabic" : "التبديل إلى الإنجليزية"}><Languages size={15} /><span>{isEnglish ? "العربية" : "EN"}</span></button><button className="utility-button theme-button" onClick={changeTheme} aria-label={darkMode ? copy.nav.lightMode : copy.nav.darkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}<span>{darkMode ? (isEnglish ? "Light" : "نهاري") : (isEnglish ? "Dark" : "ليلي")}</span></button><a className="pdf-button" href={ASSETS.pdf[language]} download aria-label={copy.nav.pdfDownload}><FileDown size={16} /><span>{copy.nav.pdfDownload}</span></a><button className="menu-button" onClick={() => setMenuOpen((open) => !open)} aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen}>{menuOpen ? <X size={22} /> : <Menu size={22} />}</button></div>
         </div>
         {menuOpen && <div className="mobile-nav" aria-label={isEnglish ? "Mobile navigation" : "تنقل الهاتف"}>{navItems.map((item, index) => <a key={item.id} href={`#${item.id}`} className={activeSection === item.id ? "active" : ""} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{item.label}</a>)}</div>}
       </header>
+      {searchOpen && <section className="search-panel" aria-label={isEnglish ? "Search the academic dossier" : "البحث داخل الملف الأكاديمي"}><div className="search-panel-inner container"><div className="search-field-wrap"><Search size={18} aria-hidden="true" /><input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder={isEnglish ? "Search sections, roles, books..." : "ابحث في الأقسام والمناصب والكتب..."} aria-label={isEnglish ? "Search" : "بحث"} /><button className="search-close" onClick={() => { setSearchOpen(false); setSearchQuery(""); }} aria-label={isEnglish ? "Close search" : "إغلاق البحث"}><X size={17} /></button></div><div className="search-results" role="list">{searchResults.length ? searchResults.map((entry) => <button key={entry.id} className="search-result" onClick={() => scrollTo(entry.id)} role="listitem"><span className="search-result-index">{String(navIds.indexOf(entry.id as typeof navIds[number]) + 1).padStart(2, "0")}</span><span><strong>{entry.label}</strong><small>{entry.preview}</small></span><ArrowDownLeft size={15} /></button>) : <p className="search-empty">{isEnglish ? "No matching section was found." : "لم نعثر على قسم مطابق."}</p>}</div></div></section>}
 
       <main>
         <section id="overview" className="hero-section"><div className="hero-media" style={{ backgroundImage: `url(${ASSETS.hero})` }} aria-hidden="true" /><div className="hero-overlay" aria-hidden="true" /><div className="hero-grid container"><div className="hero-copy"><p className="hero-kicker"><span className="kicker-dot" /> {copy.hero.kicker}</p><h1>{copy.hero.titleLine1}<br /><em>{copy.hero.titleLine2}</em></h1><p className="hero-lede">{copy.hero.lede}</p><div className="hero-cta-row"><a className="button button-primary" href="#education">{copy.hero.exploreBtn} <ArrowDownLeft size={16} /></a><button className="text-button" onClick={() => scrollTo("contact")}>{copy.hero.contactBtn} <ArrowUpLeft size={16} /></button></div><div className="hero-signature"><span className="signature-line" /><span>{copy.meta.location}</span></div><img className="hero-seal" src={ASSETS.mark} alt="" aria-hidden="true" /></div><aside className="hero-panel"><div className="hero-panel-top"><span>{copy.hero.noteTitle}</span><Sparkles size={14} /></div><p className="hero-panel-note">{copy.hero.noteQuote}</p><div className="hero-panel-rule" /><div className="mini-facts"><div><strong>{copy.hero.fact1Value}</strong><span>{copy.hero.fact1Title}</span></div><div><strong>{copy.hero.fact2Value}</strong><span>{copy.hero.fact2Title}</span></div></div></aside></div></section>

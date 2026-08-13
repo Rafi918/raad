@@ -21,3 +21,15 @@ describe("academic CV content", () => {
     }
   });
 });
+
+
+  it("does not expose the removed specialization phrase or malformed cleanup text", () => {
+    const serialized = JSON.stringify(cvData);
+    expect(serialized).not.toContain("القانون الدولي");
+    expect(serialized).not.toContain("International Law");
+    expect(serialized).not.toContain("international law");
+    expect(serialized).not.toContain("في والأدب");
+    expect(serialized).not.toContain("embrand");
+    expect(cvData.ar.meta.primarySpec).toContain("النقد الأدبي");
+    expect(cvData.en.meta.primarySpec).toContain("Literary Criticism");
+  });
